@@ -25,10 +25,10 @@ def initialize_history():
             json.dump([], f)
         logger.info(f"Created new post history file: {HISTORY_FILE}")
 
-def add_post(post_id, subreddit, title, template_name, timestamp=None):
+def add_post_to_history(post_id, subreddit, template_name, timestamp=None):
     """Add a post to the history."""
     if timestamp is None:
-        timestamp = datetime.now().isoformat()
+        timestamp = int(datetime.now().timestamp())
     
     # Load existing history
     try:
@@ -41,10 +41,8 @@ def add_post(post_id, subreddit, title, template_name, timestamp=None):
     post_data = {
         'post_id': post_id,
         'subreddit': subreddit,
-        'title': title,
-        'template_used': template_name,
-        'timestamp': timestamp,
-        'url': f"https://www.reddit.com/comments/{post_id}"
+        'template_name': template_name,
+        'timestamp': timestamp
     }
     
     history.append(post_data)
@@ -131,6 +129,15 @@ def clear_history():
     with open(HISTORY_FILE, 'w') as f:
         json.dump([], f)
     logger.info("Post history cleared")
+
+def get_all_posts():
+    """Get all posts from history."""
+    try:
+        with open(HISTORY_FILE, 'r') as f:
+            history = json.load(f)
+        return history
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
 
 # Initialize history file when module is imported
 initialize_history()

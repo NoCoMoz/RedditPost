@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Reddit Post Bot{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Bot Status</span>
+                <span id="status-timestamp" class="text-muted small">{{ timestamp }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Current Status</h5>
+                        <p>
+                            <span id="bot-status" class="badge status-badge {% if bot_running %}status-running{% else %}status-stopped{% endif %}">
+                                {{ bot_status }}
+                            </span>
+                        </p>
+                        <p>Last Action: <span id="bot-last-action">{{ bot_last_action }}</span></p>
+                        <p>Runtime: <span id="bot-runtime">{{ runtime or '00:00:00' }}</span></p>
+                        
+                        <div class="mt-4">
+                            {% if bot_running %}
+                            <form action="{{ url_for('stop_bot') }}" method="post">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-stop-circle"></i> Stop Bot
+                                </button>
+                            </form>
+                            {% else %}
+                            <form action="{{ url_for('start_bot') }}" method="post">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-play-circle"></i> Start Bot
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <div class="card stat-card">
+                                    <div class="stat-value">{{ stats.total_posts }}</div>
+                                    <div class="stat-label">Total Posts</div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="card stat-card">
+                                    <div class="stat-value">{{ stats.templates }}</div>
+                                    <div class="stat-label">Templates</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="card stat-card">
+                                    <div class="stat-value">{{ stats.subreddits }}</div>
+                                    <div class="stat-label">Subreddits</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="card stat-card">
+                                    <div class="stat-value">{{ stats.active_subreddits }}</div>
+                                    <div class="stat-label">Active</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <span>Quick Actions</span>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('templates') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-chat-square-text"></i> Manage Templates
+                    </a>
+                    <a href="{{ url_for('add_template') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-plus-circle"></i> Add New Template
+                    </a>
+                    <a href="{{ url_for('subreddits') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-collection"></i> Manage Subreddits
+                    </a>
+                    <a href="{{ url_for('add_subreddit') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-plus-circle"></i> Add New Subreddit
+                    </a>
+                    <a href="{{ url_for('history') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-clock-history"></i> View Post History
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <span>Recent Activity</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="recent-activity">
+                    {% if recent_posts %}
+                        {% for post in recent_posts|reverse %}
+                        <div class="activity-item">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <span class="badge subreddit-badge">r/{{ post.subreddit }}</span>
+                                    <span class="ms-2">{{ post.template_name }}</span>
+                                </div>
+                                <span class="activity-time">{{ post.timestamp|timestamp_to_date }}</span>
+                            </div>
+                            <div class="mt-1">
+                                <a href="https://reddit.com/{{ post.post_id }}" target="_blank" class="text-decoration-none">
+                                    View on Reddit <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="activity-item text-center py-4">
+                            <p class="text-muted mb-0">No recent activity</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <a href="{{ url_for('history') }}" class="text-decoration-none">View All Activity</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Custom filter for timestamp conversion
+    function timestampToDate(timestamp) {
+        const date = new Date(timestamp * 1000);
+        return date.toLocaleString();
+    }
+</script>
+{% endblock %}

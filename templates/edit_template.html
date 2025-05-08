@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Template - Reddit Post Bot{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <a href="{{ url_for('templates') }}" class="text-decoration-none">
+            <i class="bi bi-arrow-left"></i> Back to Templates
+        </a>
+        <h1 class="h3 mt-2">Edit Template: {{ template.name }}</h1>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            <div class="mb-3">
+                <label for="name" class="form-label">Template Name</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ template.name }}" disabled>
+                <div class="form-text">Template name cannot be changed</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="keywords" class="form-label">Keywords</label>
+                <textarea class="form-control" id="keywords" name="keywords" rows="3" required>{{ template.keywords|join(', ') }}</textarea>
+                <div class="form-text">Separate keywords with commas</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="message" class="form-label">Message</label>
+                <textarea class="form-control" id="message" name="message" rows="15" required>{{ template.message }}</textarea>
+                <div class="form-text">You can use Markdown formatting in your message</div>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('view_template', template_name=template.name) }}" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

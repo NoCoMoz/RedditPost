@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Add New Subreddit - Reddit Post Bot{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <a href="{{ url_for('subreddits') }}" class="text-decoration-none">
+            <i class="bi bi-arrow-left"></i> Back to Subreddits
+        </a>
+        <h1 class="h3 mt-2">Add New Subreddit</h1>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            <div class="mb-3">
+                <label for="name" class="form-label">Subreddit Name</label>
+                <div class="input-group">
+                    <span class="input-group-text">r/</span>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-text">Enter the subreddit name without the "r/" prefix</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category" required>
+                    <option value="" selected disabled>Select a category</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('subreddits') }}" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Add Subreddit</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

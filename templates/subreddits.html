@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Subreddits - Reddit Post Bot{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">Subreddits</h1>
+    <a href="{{ url_for('add_subreddit') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Add New Subreddit
+    </a>
+</div>
+
+{% for category, subreddits in categories.items() %}
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>{{ category }}</span>
+        <span class="badge bg-secondary">{{ subreddits|length }} subreddits</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Subreddit</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subreddit in subreddits %}
+                    <tr>
+                        <td>
+                            <a href="https://reddit.com/r/{{ subreddit.name }}" target="_blank" class="text-decoration-none">
+                                r/{{ subreddit.name }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if subreddit.enabled %}
+                            <span class="badge bg-success">Enabled</span>
+                            {% else %}
+                            <span class="badge bg-danger">Disabled</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{{ url_for('toggle_subreddit', subreddit_name=subreddit.name) }}" method="post" class="d-inline">
+                                {% if subreddit.enabled %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-pause-circle"></i> Disable
+                                </button>
+                                {% else %}
+                                <button type="submit" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-play-circle"></i> Enable
+                                </button>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% if not categories %}
+<div class="text-center py-5">
+    <div class="mb-3">
+        <i class="bi bi-collection" style="font-size: 3rem; color: #ccc;"></i>
+    </div>
+    <h3>No Subreddits Found</h3>
+    <p class="text-muted">Add your first subreddit to get started</p>
+    <a href="{{ url_for('add_subreddit') }}" class="btn btn-primary mt-2">
+        <i class="bi bi-plus-circle"></i> Add New Subreddit
+    </a>
+</div>
+{% endif %}
+{% endblock %}

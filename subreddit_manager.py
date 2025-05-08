@@ -23,22 +23,8 @@ def initialize_config():
     if not os.path.exists(SUBREDDIT_CONFIG_FILE):
         # Create initial config from the current config.py values
         config_data = {
-            'categories': {
-                'Activism & Organizing': config.ACTIVISM_SUBREDDITS,
-                'Social Justice & Human Rights': config.SOCIAL_JUSTICE_SUBREDDITS,
-                'Local/Regional': config.LOCAL_SUBREDDITS,
-                'General Political Engagement': config.POLITICAL_SUBREDDITS,
-                'Creative + Meme-Oriented': config.CREATIVE_SUBREDDITS,
-                'Mutual Aid, Cooperation & Tech': config.MUTUAL_AID_SUBREDDITS
-            },
-            'enabled_categories': [
-                'Activism & Organizing',
-                'Social Justice & Human Rights',
-                'Local/Regional',
-                'General Political Engagement',
-                'Creative + Meme-Oriented',
-                'Mutual Aid, Cooperation & Tech'
-            ]
+            'categories': config.SUBREDDIT_CATEGORIES,
+            'enabled_categories': list(config.SUBREDDIT_CATEGORIES.keys())
         }
         
         with open(SUBREDDIT_CONFIG_FILE, 'w') as f:
@@ -64,14 +50,25 @@ def save_config(config_data):
     logger.info("Subreddit configuration saved")
 
 def get_all_subreddits():
-    """Get a list of all subreddits from all enabled categories."""
+    """Get a list of all subreddits from all categories."""
     config_data = get_config()
     all_subreddits = []
     
-    for category in config_data['enabled_categories']:
-        all_subreddits.extend(config_data['categories'][category])
+    for category, subreddits in config_data['categories'].items():
+        all_subreddits.extend(subreddits)
     
     return all_subreddits
+
+def get_active_subreddits():
+    """Get a list of all active subreddits."""
+    config_data = get_config()
+    active_subreddits = []
+    
+    for category, subreddits in config_data['categories'].items():
+        if category in config_data['enabled_categories']:
+            active_subreddits.extend(subreddits)
+    
+    return active_subreddits
 
 def get_categories():
     """Get a list of all categories and their subreddits."""

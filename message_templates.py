@@ -128,48 +128,83 @@ I hope these resources help strengthen your organizing work!
 
 # All templates dictionary - maps keywords to templates
 TEMPLATES = {
-    'activism': {
+    'General Activism': {
         'keywords': ACTIVISM_KEYWORDS,
-        'template': ACTIVISM_TEMPLATE,
+        'message': ACTIVISM_TEMPLATE,
         'description': 'General activism resources'
     },
-    'mutual_aid': {
+    'Mutual Aid': {
         'keywords': MUTUAL_AID_KEYWORDS,
-        'template': MUTUAL_AID_TEMPLATE,
+        'message': MUTUAL_AID_TEMPLATE,
         'description': 'Mutual aid and community support resources'
     },
-    'security': {
+    'Digital Security': {
         'keywords': SECURITY_KEYWORDS,
-        'template': SECURITY_TEMPLATE,
+        'message': SECURITY_TEMPLATE,
         'description': 'Digital security and privacy resources'
     },
-    'organizing': {
+    'Community Organizing': {
         'keywords': ORGANIZING_KEYWORDS,
-        'template': ORGANIZING_TEMPLATE,
+        'message': ORGANIZING_TEMPLATE,
         'description': 'Community organizing and movement building resources'
     }
 }
 
-# Function to get all keywords from all templates
-def get_all_keywords():
-    all_keywords = []
-    for template_info in TEMPLATES.values():
-        all_keywords.extend(template_info['keywords'])
-    return all_keywords
+# Functions for template management
+def get_all_templates():
+    """Get all available templates."""
+    return [{'name': name, 'keywords': data['keywords'], 'message': data['message']} 
+            for name, data in TEMPLATES.items()]
+
+def get_template(template_name):
+    """Get a specific template by name."""
+    if template_name in TEMPLATES:
+        return {
+            'name': template_name,
+            'keywords': TEMPLATES[template_name]['keywords'],
+            'message': TEMPLATES[template_name]['message']
+        }
+    return None
+
+def update_template(template_name, keywords, message):
+    """Update an existing template."""
+    if template_name in TEMPLATES:
+        TEMPLATES[template_name]['keywords'] = keywords
+        TEMPLATES[template_name]['message'] = message
+        return True
+    return False
+
+def add_template(template_name, keywords, message):
+    """Add a new template."""
+    if template_name not in TEMPLATES:
+        TEMPLATES[template_name] = {
+            'keywords': keywords,
+            'message': message,
+            'description': f'Custom template: {template_name}'
+        }
+        return True
+    return False
 
 # Function to find the best template for a given text
 def get_template_for_text(text):
+    """Find the best template based on keyword matches in the text."""
     text = text.lower()
     
-    # Count matches for each template
-    template_matches = {}
-    for template_name, template_info in TEMPLATES.items():
-        matches = sum(1 for keyword in template_info['keywords'] if keyword.lower() in text)
-        if matches > 0:
-            template_matches[template_name] = matches
+    # Count keyword matches for each template
+    matches = {}
+    for name, data in TEMPLATES.items():
+        matches[name] = sum(1 for keyword in data['keywords'] if keyword.lower() in text)
     
-    # Return the template with the most matches, or None if no matches
-    if template_matches:
-        best_template = max(template_matches.items(), key=lambda x: x[1])[0]
-        return TEMPLATES[best_template]['template']
+    # Find the template with the most matches
+    if matches:
+        best_template = max(matches.items(), key=lambda x: x[1])
+        
+        # Only return a template if there's at least one match
+        if best_template[1] > 0:
+            template_name = best_template[0]
+            return {
+                'name': template_name,
+                'message': TEMPLATES[template_name]['message']
+            }
+    
     return None
