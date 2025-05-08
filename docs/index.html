@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activism Resource Bot - A Reddit Bot for Social Justice</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span>Activism Resource Bot</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#templates">Templates</a></li>
+                    <li><a href="#setup">Setup</a></li>
+                    <li><a href="#documentation">Documentation</a></li>
+                    <li><a href="https://github.com/your-username/activism-resource-bot" class="github-link"><i class="fab fa-github"></i> GitHub</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Activism Resource Bot</h1>
+                    <p>A sophisticated Reddit bot that monitors activism and social justice subreddits, providing targeted resources based on post content.</p>
+                    <div class="cta-buttons">
+                        <a href="#setup" class="btn primary-btn">Get Started</a>
+                        <a href="https://github.com/your-username/activism-resource-bot" class="btn secondary-btn"><i class="fab fa-github"></i> View on GitHub</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="code-window">
+                        <div class="code-header">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                            <span class="filename">reddit_bot.py</span>
+                        </div>
+                        <pre><code class="language-python">
+# Activism Resource Bot
+import praw
+import logging
+from message_templates import get_template_for_text
+from subreddit_manager import get_active_subreddits
+from post_history import add_post_to_history
+
+# Initialize the Reddit API client
+reddit = praw.Reddit(
+    client_id="YOUR_CLIENT_ID",
+    client_secret="YOUR_CLIENT_SECRET",
+    user_agent="Activism Resource Bot v1.0",
+    username="YOUR_USERNAME",
+    password="YOUR_PASSWORD"
+)
+
+# Monitor subreddits and respond to posts
+def run_bot():
+    for subreddit_name in get_active_subreddits():
+        subreddit = reddit.subreddit(subreddit_name)
+        for post in subreddit.new(limit=10):
+            # Check if post contains relevant keywords
+            template = get_template_for_text(post.title + " " + post.selftext)
+            if template:
+                # Respond with appropriate template
+                post.reply(template["message"])
+                # Track post in history
+                add_post_to_history(post.id, subreddit_name, template["name"])
+                logging.info(f"Replied to post in r/{subreddit_name}")
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>Multi-Template System</h3>
+                    <p>Support for multiple message templates triggered by different sets of keywords, allowing for targeted responses.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Smart Keyword Matching</h3>
+                    <p>Dynamically selects the appropriate response template based on the keywords present in the post content.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <h3>Subreddit Management</h3>
+                    <p>Add, remove, enable, or disable subreddits through a user-friendly management interface.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3>Post History Tracking</h3>
+                    <p>Track where the bot has posted, which templates were used, and view statistics about bot activity.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-terminal"></i>
+                    </div>
+                    <h3>Management Interface</h3>
+                    <p>User-friendly command-line interface for managing templates, subreddits, and viewing post history.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Rate Limit Handling</h3>
+                    <p>Built-in protection against Reddit's rate limits to ensure your bot operates within the platform's guidelines.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="templates" class="templates">
+        <div class="container">
+            <h2>Message Templates</h2>
+            <p class="section-description">The bot comes with four specialized templates, each triggered by different sets of keywords:</p>
+            
+            <div class="template-tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="general">General Activism</button>
+                    <button class="tab-btn" data-tab="mutual-aid">Mutual Aid</button>
+                    <button class="tab-btn" data-tab="digital-security">Digital Security</button>
+                    <button class="tab-btn" data-tab="community">Community Organizing</button>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="tab-pane active" id="general">
+                        <h3>General Activism Resources</h3>
+                        <p>Triggered by keywords related to activism, organizing, and social justice.</p>
+                        <div class="template-preview">
+                            <pre><code>Hello! I noticed you're interested in activism and social justice.
+
+Here are some general resources that might be helpful:
+
+- [ACLU Know Your Rights](https://www.aclu.org/know-your-rights)
+- [Amnesty International Activism Guide](https://www.amnesty.org/en/latest/campaigns/)
+- [Black Lives Matter Resources](https://blacklivesmatter.com/resources/)
+- [Sunrise Movement - Climate Action](https://www.sunrisemovement.org/take-action/)
+
+Hope these resources help with your activism journey!</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane" id="mutual-aid">
+                        <h3>Mutual Aid Resources</h3>
+                        <p>Triggered by keywords related to mutual aid, community support, and resource sharing.</p>
+                        <div class="template-preview">
+                            <pre><code>Hello! I noticed you're interested in mutual aid and community support.
+
+Here are some mutual aid resources that might be helpful:
+
+- [Mutual Aid Hub - Find Local Networks](https://www.mutualaidhub.org/)
+- [Big Door Brigade - Mutual Aid Toolbox](https://bigdoorbrigade.com/mutual-aid-toolbox/)
+- [Mutual Aid Disaster Relief Guide](https://mutualaiddisasterrelief.org/resources/)
+- [Dean Spade's Mutual Aid Guide](https://www.deanspade.net/mutual-aid-building-solidarity-during-this-crisis-and-the-next/)
+
+Hope these resources help with your mutual aid efforts!</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane" id="digital-security">
+                        <h3>Digital Security for Activists</h3>
+                        <p>Triggered by keywords related to digital security, privacy, and online activism.</p>
+                        <div class="template-preview">
+                            <pre><code>Hello! I noticed you're interested in digital security for activism.
+
+Here are some digital security resources that might be helpful:
+
+- [Electronic Frontier Foundation - Surveillance Self-Defense](https://ssd.eff.org/)
+- [Security in a Box - Digital Security Tools](https://securityinabox.org/en/)
+- [Digital First Aid Kit](https://digitalfirstaid.org/)
+- [Freedom of the Press Foundation - Digital Security](https://freedom.press/training/)
+
+Stay safe online with your activism work!</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane" id="community">
+                        <h3>Community Organizing Resources</h3>
+                        <p>Triggered by keywords related to community organizing, grassroots movements, and local action.</p>
+                        <div class="template-preview">
+                            <pre><code>Hello! I noticed you're interested in community organizing.
+
+Here are some community organizing resources that might be helpful:
+
+- [Beautiful Trouble - Tactics and Principles](https://beautifultrouble.org/)
+- [Midwest Academy - Organizing for Social Change](https://www.midwestacademy.com/resources/)
+- [Movement Strategy Center](https://movementstrategy.org/resources/)
+- [Highlander Research and Education Center](https://highlandercenter.org/resources/)
+
+Hope these resources help with your community organizing efforts!</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="setup" class="setup">
+        <div class="container">
+            <h2>Setup Instructions</h2>
+            <div class="setup-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Clone the Repository</h3>
+                        <p>Start by cloning the repository to your local machine:</p>
+                        <div class="code-block">
+                            <pre><code>git clone https://github.com/your-username/activism-resource-bot.git
+cd activism-resource-bot</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Reddit API Credentials</h3>
+                        <p>Create a Reddit application to get API credentials:</p>
+                        <ol>
+                            <li>Go to <a href="https://www.reddit.com/prefs/apps" target="_blank">Reddit App Preferences</a></li>
+                            <li>Scroll down and click "create another app..."</li>
+                            <li>Fill in the details and select "script"</li>
+                            <li>Note down your Client ID and Client Secret</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Update Configuration</h3>
+                        <p>Edit the <code>config.py</code> file with your Reddit API credentials:</p>
+                        <div class="code-block">
+                            <pre><code>CLIENT_ID = 'your_client_id'
+CLIENT_SECRET = 'your_client_secret'
+USER_AGENT = 'python:activism-resource-bot:v1.0 (by /u/your_username)'
+USERNAME = 'your_reddit_username'
+PASSWORD = 'your_reddit_password'</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Install Dependencies</h3>
+                        <p>Install the required Python packages:</p>
+                        <div class="code-block">
+                            <pre><code>pip install praw</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3>Run the Bot</h3>
+                        <p>Run the management interface to start using the bot:</p>
+                        <div class="code-block">
+                            <pre><code>python main.py</code></pre>
+                        </div>
+                        <p>From the management interface, you can view templates, manage subreddits, view post history, and run the bot.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="documentation" class="documentation">
+        <div class="container">
+            <h2>Documentation</h2>
+            <div class="docs-grid">
+                <div class="docs-card">
+                    <h3>Project Structure</h3>
+                    <ul class="file-tree">
+                        <li class="file"><i class="fas fa-file-code"></i> reddit_bot.py</li>
+                        <li class="file"><i class="fas fa-file-code"></i> config.py</li>
+                        <li class="file"><i class="fas fa-file-code"></i> message_templates.py</li>
+                        <li class="file"><i class="fas fa-file-code"></i> subreddit_manager.py</li>
+                        <li class="file"><i class="fas fa-file-code"></i> post_history.py</li>
+                        <li class="file"><i class="fas fa-file-code"></i> main.py</li>
+                        <li class="file"><i class="fas fa-file"></i> README.md</li>
+                        <li class="file"><i class="fas fa-file"></i> .gitignore</li>
+                    </ul>
+                </div>
+                
+                <div class="docs-card">
+                    <h3>Key Components</h3>
+                    <div class="component">
+                        <h4>reddit_bot.py</h4>
+                        <p>The main bot script that monitors subreddits and responds to posts.</p>
+                    </div>
+                    <div class="component">
+                        <h4>message_templates.py</h4>
+                        <p>Defines multiple message templates and their associated keywords.</p>
+                    </div>
+                    <div class="component">
+                        <h4>subreddit_manager.py</h4>
+                        <p>Manages the subreddits that the bot monitors.</p>
+                    </div>
+                    <div class="component">
+                        <h4>post_history.py</h4>
+                        <p>Tracks the history of posts made by the bot.</p>
+                    </div>
+                    <div class="component">
+                        <h4>main.py</h4>
+                        <p>Provides a user-friendly interface for managing the bot.</p>
+                    </div>
+                </div>
+                
+                <div class="docs-card">
+                    <h3>Management Interface</h3>
+                    <p>The management interface provides the following options:</p>
+                    <ol>
+                        <li><strong>View Templates</strong>: See all available templates</li>
+                        <li><strong>View Template Details</strong>: See keywords and message for a specific template</li>
+                        <li><strong>Edit Template</strong>: Modify an existing template</li>
+                        <li><strong>Run Bot</strong>: Start monitoring subreddits</li>
+                        <li><strong>Manage Subreddits</strong>: Add, remove, enable, or disable subreddits</li>
+                        <li><strong>View Post History</strong>: See where the bot has posted</li>
+                        <li><strong>Test Bot</strong>: Test the template selection logic</li>
+                        <li><strong>Exit</strong>: Exit the program</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-robot"></i>
+                    <span>Activism Resource Bot</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#features">Features</a>
+                    <a href="#templates">Templates</a>
+                    <a href="#setup">Setup</a>
+                    <a href="#documentation">Documentation</a>
+                    <a href="https://github.com/your-username/activism-resource-bot"><i class="fab fa-github"></i> GitHub</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Activism Resource Bot. Licensed under MIT.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
